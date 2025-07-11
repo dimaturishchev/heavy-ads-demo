@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Heavy-Ad demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body   { font-family: sans-serif; margin: 1rem; }
+      h1     { font-size: 1.25rem; }
+      .slot  { width: 100%; border: 2px inset #ccc; margin: .5rem 0; }
+      iframe { width: 100%; height: 100%; border: 0; }
+    </style>
+  </head>
+
+  <body>
+    <h1>Heavy Ad Intervention demo</h1>
+
+    <div id="slot-net" class="slot" style="height: 600px"></div>
+    <div id="slot-cpu" class="slot" style="height: 250px"></div>
+
+    <script async src="https://cdn.jsdelivr.net/npm/prebid.js/dist/prebid.js"></script>
+    <script>
+      "use strict";
+
+      const netCreative = `
+        <html>
+          <body style="margin:0; font-family:sans-serif; text-align:center">
+            <p>Network heavy ad</p>
+            <script>
+              fetch('https://nbg1-speed.hetzner.com/100MB.bin?' + Date.now(),
+                    { mode: 'no-cors' });
+            </scr` + `ipt>
+          </body>
+        </html>`;
+
+      const cpuCreative = `
+        <html>
+          <head>
+            <style>
+              body { margin:0; font-family:sans-serif; text-align:center; }
+              #ops { font-weight: bold; }
+            </style>
+          </head>
+          <body>
+            <p>CPU heavy ad</p>
+            <span id="ops">0</span>
+            <script>
+              let n = 0;
+              function spin() {
+                const end = performance.now() + 25;
+                while (performance.now() < end) { n++; }
+                document.getElementById('ops').textContent = n.toLocaleString();
+                requestAnimationFrame(spin);
+              }
+              spin();
+            </scr` + `ipt>
+          </body>
+        </html>`;
+
+      window.pbjs = window.pbjs || {};
+      pbjs.que = pbjs.que || [];
+
+      pbjs.que.push(() => {
+        const netFrame = document.createElement("iframe");
+        netFrame.srcdoc = netCreative;
+        document.getElementById("slot-net").appendChild(netFrame);
+
+        const cpuFrame = document.createElement("iframe");
+        cpuFrame.srcdoc = cpuCreative;
+        document.getElementById("slot-cpu").appendChild(cpuFrame);
+      });
+    </script>
+  </body>
+</html>
