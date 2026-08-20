@@ -18,57 +18,16 @@
     <div id="slot-net" class="slot" style="height: 600px"></div>
     <div id="slot-cpu" class="slot" style="height: 250px"></div>
 
-    <script async src="https://cdn.jsdelivr.net/npm/prebid.js@10.9.0/dist/not-for-prod/prebid.min.js"></script>
+    <!--
+      ads/prebid.js is tagged as ad script by Chrome (its URL matches the
+      EasyList rule "/prebid.$script"), and it creates both iframes itself,
+      which is what makes Chrome tag the frames as ads. See the comment at the
+      top of that file.
+    -->
+    <script src="ads/prebid.js"></script>
     <script>
       "use strict";
-
-      const netCreative = `
-        <html>
-          <body style="margin:0; font-family:sans-serif; text-align:center">
-            <p>Network heavy ad</p>
-            <script>
-              fetch('https://nbg1-speed.hetzner.com/100MB.bin?' + Date.now(),
-                    { mode: 'no-cors' });
-            </scr` + `ipt>
-          </body>
-        </html>`;
-
-      const cpuCreative = `
-        <html>
-          <head>
-            <style>
-              body { margin:0; font-family:sans-serif; text-align:center; }
-              #ops { font-weight: bold; }
-            </style>
-          </head>
-          <body>
-            <p>CPU heavy ad</p>
-            <span id="ops">0</span>
-            <script>
-              let n = 0;
-              function spin() {
-                const end = performance.now() + 25;
-                while (performance.now() < end) { n++; }
-                document.getElementById('ops').textContent = n.toLocaleString();
-                requestAnimationFrame(spin);
-              }
-              spin();
-            </scr` + `ipt>
-          </body>
-        </html>`;
-
-      window.pbjs = window.pbjs || {};
-      pbjs.que = pbjs.que || [];
-
-      pbjs.que.push(() => {
-        const netFrame = document.createElement("iframe");
-        netFrame.srcdoc = netCreative;
-        document.getElementById("slot-net").appendChild(netFrame);
-
-        const cpuFrame = document.createElement("iframe");
-        cpuFrame.srcdoc = cpuCreative;
-        document.getElementById("slot-cpu").appendChild(cpuFrame);
-      });
+      renderHeavyAds();
     </script>
   </body>
 </html>
