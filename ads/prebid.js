@@ -16,7 +16,9 @@
     '<html><body style="margin:0;font-family:sans-serif;text-align:center">',
     '<p>Network heavy ad</p>',
     '<scr' + 'ipt>',
-    "fetch('https://hil-speed.hetzner.com/100MB.bin?' + Date.now(), { mode: 'no-cors' });",
+    '// No query string: the Hetzner speed servers answer ERR_EMPTY_RESPONSE to any',
+    "// request that carries one, so cache busting has to go through cache: 'no-store'.",
+    "fetch('https://hil-speed.hetzner.com/100MB.bin', { mode: 'no-cors', cache: 'no-store' });",
     '</scr' + 'ipt>',
     '</body></html>'
   ].join('\n');
