@@ -16,7 +16,7 @@
     '<html><body style="margin:0;font-family:sans-serif;text-align:center">',
     '<p>Network heavy ad</p>',
     '<scr' + 'ipt>',
-    "fetch('https://nbg1-speed.hetzner.com/100MB.bin?' + Date.now(), { mode: 'no-cors' });",
+    "fetch('https://hil-speed.hetzner.com/100MB.bin?' + Date.now(), { mode: 'no-cors' });",
     '</scr' + 'ipt>',
     '</body></html>'
   ].join('\n');
