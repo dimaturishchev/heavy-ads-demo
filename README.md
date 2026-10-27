@@ -8,7 +8,7 @@ This repo contains a minimal test page that forces Chrome’s Heavy-Ad Intervent
 
 ## Stable steps to reproduce
 
-1. Host **heavy.html** somewhere or use the live demo above (if still online).  
+1. Host **heavy.html** together with the **ads/** folder somewhere, or use the live demo above (if still online).  
 2. Create a **new Chrome profile**.  
 3. Navigate to **heavy.html** in that profile.  
 4. The **network frame** is killed almost immediately.  
@@ -35,3 +35,10 @@ untagged — while prebid’s own `__pb_locator__` iframe still showed the `ad` 
 Verified on Chrome 151: an ad-script-provided function creating the frame is
 tagged (sync or via `setTimeout`), but an ad script calling a first-party
 callback that creates the frame is not.
+
+## Network payload
+
+The network frame repeatedly downloads `ads/payload.bin` (1 MiB of random,
+incompressible bytes) from the same site, with a cache-busting query string.
+Earlier versions pulled a 100 MB speed-test file from Hetzner, but those servers
+now drop browser requests, so the payload is self-hosted.

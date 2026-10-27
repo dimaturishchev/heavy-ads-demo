@@ -12,13 +12,22 @@
 "use strict";
 
 (function () {
+  // The network creative downloads ads/payload.bin (1 MiB of random bytes, so it
+  // can't be compressed in transit) again and again until Chrome unloads the frame.
+  // The heavy-ad network limit is 4 MB plus up to ~1.3 MB of noise, so 32 rounds
+  // are far more than enough. The payload is served next to heavy.html (a srcdoc
+  // frame resolves relative URLs against its parent) because third-party speed-test
+  // files are not reliable: Hetzner's now close the connection on browser fetches.
   var netCreative = [
     '<html><body style="margin:0;font-family:sans-serif;text-align:center">',
     '<p>Network heavy ad</p>',
     '<scr' + 'ipt>',
-    '// No query string: the Hetzner speed servers answer ERR_EMPTY_RESPONSE to any',
-    "// request that carries one, so cache busting has to go through cache: 'no-store'.",
-    "fetch('https://hil-speed.hetzner.com/100MB.bin', { mode: 'no-cors', cache: 'no-store' });",
+    '(async function () {',
+    '  for (let i = 0; i < 32; i++) {',
+    "    const r = await fetch('ads/payload.bin?' + Date.now() + '-' + i, { cache: 'no-store' });",
+    '    await r.arrayBuffer();',
+    '  }',
+    '})();',
     '</scr' + 'ipt>',
     '</body></html>'
   ].join('\n');
