@@ -9,10 +9,20 @@ This repo contains a minimal test page that forces Chrome’s Heavy-Ad Intervent
 ## Stable steps to reproduce
 
 1. Host **heavy.html** together with the **ads/** folder somewhere, or use the live demo above (if still online).  
-2. Create a **new Chrome profile**.  
+2. Create a **new Chrome profile** (see [why](#why-a-new-chrome-profile)).  
 3. Navigate to **heavy.html** in that profile.  
 4. The **network frame** is killed almost immediately.  
 5. The **CPU frame** is killed in about 15 seconds in the current implementation (12 July 2025, Chrome 138.0.7204.101).
+
+## Why a new Chrome profile
+
+Chrome stops removing heavy ads on a site once it has removed 5 there within
+24 hours. The count is kept per host of the page in the tab (not per URL or per
+ad), lasts until 24 hours after the latest removal, and is saved in the profile
+(`heavy_ad_intervention_opt_out.db`), so restarting Chrome doesn't reset it.
+Each load of heavy.html uses up two removals, so on the third load the CPU frame
+is no longer removed, and from the fourth load neither frame is. A new profile
+starts with a clean count.
 
 ## How the frames get tagged as ads
 
